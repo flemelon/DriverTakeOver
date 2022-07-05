@@ -3,4 +3,8 @@
 
  Flemon GHOBRIAL
 
- <video src='sample_clip.mov' width=480/> 
+ ![](sample_clip.mov)
+
+ <video width="320" height="240" controls>
+  <source src="sample_clip.mov" type="video/mp4">
+</video>
