@@ -105,6 +105,7 @@ public class CarController : MonoBehaviour
 
         string brakeLog = (distance <= minDistance) ? "\nbreak!" : "";
 
+        /*
         Debug.Log(
             "steeringAngle: " + currentSteeringAngle + 
             "\nsteerCoefficient: " + steeringCoefficient + 
@@ -115,6 +116,7 @@ public class CarController : MonoBehaviour
             "\ncurrentBrakeForce: "+ currentBrakeForce +
             brakeLog
         );
+        */
     }
 
     private void ApplyBraking()

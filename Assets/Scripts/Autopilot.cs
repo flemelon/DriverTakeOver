@@ -3,12 +3,20 @@ using PathCreation;
 
 public class Autopilot : MonoBehaviour
 {
-    public PathCreator pathCreator;
+    public PathGenerator pathGenerator;
+    private PathCreator pathCreator;
     public float speed = 3;
-    float distanceTravelled;
+    public float distanceTravelled;
+
+    void Start()
+    {
+        pathGenerator = GameObject.Find("GenRoad").GetComponent<PathGenerator>();
+        pathCreator = pathGenerator.pathCreator;
+    }
 
     void Update() 
     {
+        pathCreator = pathGenerator.pathCreator;
         distanceTravelled += speed * Time.deltaTime;
         transform.position = pathCreator.path.GetPointAtDistance(distanceTravelled);
         transform.position = new Vector3(transform.position.x, 1.5f, transform.position.z);
