@@ -4,17 +4,15 @@ using UnityEngine;
 using PathCreation;
 using System.Linq;
 
+public class PathGenerator : MonoBehaviour
+{
 
- public class PathGenerator : MonoBehaviour
- {
-    private List<Vector3> points = new List<Vector3>();
-    //[SerializeField]private RoadMeshCreator roadMeshCreator;
+    public List<Vector3> points = new List<Vector3>();
     public PathCreator pathCreator;
     private Autopilot autoPilot;
-    private BezierPath bezierPath;
-    private VertexPath path;
-    private bool [,] roadMap = new bool[500,500];
-    //private Vector3 offset;
+    public BezierPath bezierPath;
+    public VertexPath path;
+    private bool [,] roadMap = new bool[10000,10000];
     public float roadWidth = 2.0f;
     public float thickness = .15f;
     public bool flattenSurface;
@@ -30,21 +28,30 @@ using System.Linq;
     MeshRenderer meshRenderer;
     Mesh mesh;
 
-    void Start()
+    // Awake is called before Start
+    void Awake()
     {
-        pathCreator = gameObject.AddComponent<PathCreator>();
-        autoPilot = GameObject.Find("Leader").GetComponent<Autopilot>();
-        points.Add(new Vector3(0,0,0));
-        points.Add(new Vector3(0,0,2));
-        bezierPath = new BezierPath(this.points.ToArray(), false, PathSpace.xyz);
-        path = new VertexPath(bezierPath, transform, 1f, 1f);
-        //offset = new Vector3(roadMap.GetLength(0)/2, 0, roadMap.GetLength(1)/2);
-         
+        InitObjects ();
+        GenerateRoad ();
     }
 
+    // Update is called once per frame
     void Update()
     {
-        if(autoPilot.distanceTravelled  >= 0.6*pathCreator.path.length)
+        
+    }
+
+    void InitObjects ()
+    {
+        pathCreator = gameObject.AddComponent<PathCreator>();
+        points.Add(new Vector3(0,0,0));
+        points.Add(new Vector3(3,0,3));
+        bezierPath = new BezierPath(this.points.ToArray(), false, PathSpace.xyz);
+    }
+
+    void GenerateRoad ()
+    {
+        while(pathCreator.path.length < 2000)
         {
             for (int i = 0; i < 3; i++)
             {
@@ -52,22 +59,23 @@ using System.Linq;
                 Vector3 newPoint;
                 do
                 {
-                    //OFFSET
-                    //float randomPosX = Random.Range(-5, 5)*3;
-                    //float randomPosZ = Random.Range(-5, 5)*3;
-
                     float randomPosX = Random.Range(1, 5)*3;
                     float randomPosZ = Random.Range(1, 5)*3;
 
                     newPoint = new Vector3(lastPoint.x + randomPosX, 0, lastPoint.z + randomPosZ);
-                    Debug.Log(newPoint);
+
                 }while( IsPointOutBound(lastPoint) && IsLastSegementIntersecting(lastPoint, newPoint));
-                bezierPath.AddSegmentToEnd(newPoint);
-                AddSegmentToRoadMap (lastPoint, newPoint);
-                
-                points.Add(newPoint);
-                Debug.Log(lastPoint);
+
+                if(!IsPointOutBound(lastPoint) && !IsPointOutBound(newPoint))
+                {
+                    bezierPath.AddSegmentToEnd(newPoint);
+
+                    AddSegmentToRoadMap (lastPoint, newPoint);
+                    
+                    points.Add(newPoint);
+                }
             }
+            bezierPath = new BezierPath(this.points.ToArray(), false, PathSpace.xyz);
             path = new VertexPath(bezierPath, transform, 1f, 1f);
             pathCreator.bezierPath = bezierPath;
         }
@@ -79,8 +87,8 @@ using System.Linq;
             CreateRoadMesh ();
         }
     }
- 
-    bool IsLastSegementIntersecting(Vector3 lastPoint, Vector3 lastSegement)
+
+        bool IsLastSegementIntersecting(Vector3 lastPoint, Vector3 lastSegement)
     {
         //Vector3 [] lastSegmentPoints = {offset-lastPoint, offset-lastSegement};
         Vector3 [] lastSegmentPoints = {lastPoint, lastSegement};
@@ -90,7 +98,9 @@ using System.Linq;
         for(float steps = 0.0f; steps <= 1.0f; steps+=0.01f)
         {
             p = pathSegment.GetPointAtTime(steps);
-            if(
+
+            if( 
+                !IsPointOutBound (p) ||
                 roadMap[(int) Mathf.Ceil(p.x), (int) Mathf.Ceil(p.z)] || 
                 roadMap[(int) Mathf.Floor(p.x), (int) Mathf.Floor(p.z)] ||
                 roadMap[(int) Mathf.Ceil(p.x), (int) Mathf.Floor(p.z)] ||
@@ -134,10 +144,14 @@ using System.Linq;
     {
         //Vector3 p = offset - point;
         Vector3 p = point;
-        if(Mathf.Floor(p.x) < 0 
-        || Mathf.Ceil(p.x) >= roadMap.GetLength(0) 
-        || Mathf.Floor(p.z) < 0 
-        || Mathf.Ceil(p.z) >= roadMap.GetLength(1))
+        if(
+            (int) Mathf.Floor(p.x) < 0 ||
+            (int) Mathf.Floor(p.z) < 0 ||
+            (int) Mathf.Floor(p.x) > roadMap.GetLength(0) ||
+            (int) Mathf.Ceil(p.x) > roadMap.GetLength(0) ||
+            (int) Mathf.Floor(p.z) > roadMap.GetLength(1) ||
+            (int) Mathf.Ceil(p.z) > roadMap.GetLength(1)
+        )
         {
             return true;
         }
@@ -264,4 +278,4 @@ using System.Linq;
             meshRenderer.sharedMaterials[0].mainTextureScale = new Vector3 (1, textureTiling);
         }
     }
- }
+}

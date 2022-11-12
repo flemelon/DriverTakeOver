@@ -6,7 +6,6 @@ public class DataDisplay : MonoBehaviour
 {
     [SerializeField] TextMeshProUGUI DataText;
     [SerializeField] GameObject car;
-    [SerializeField] GameObject leader;
     private CarController carController;
 
     private float pollingTime = 0.1f;
@@ -38,8 +37,10 @@ public class DataDisplay : MonoBehaviour
             displayText += "steeringCoefficient: " + carController.steeringCoefficient + "\n";
             displayText += "distanceCoefficient: " + carController.distanceCoefficient + "\n";
             displayText += "isBraking: " + carController.isBraking + "\n";
-            displayText += "leader position: " + leader.transform.position + "\n";
-            displayText += "car position: " + car.transform.position;
+            displayText += "current nav checkpoint index: " + carController.currentNavCheckPointIndex + "\n";
+            displayText += "current speed checkpoint index: " + carController.currentSpeedCheckPointIndex + "\n";
+            displayText += "car position: " + car.transform.position + "\n";
+            displayText += "speed: " + (int)((carController.speed*3.6)) + "km/h";
 
             DataText.text = displayText;
 

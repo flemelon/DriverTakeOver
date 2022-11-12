@@ -1,25 +1,39 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using PathCreation;
 
 public class CarController : MonoBehaviour
 {
+    public PathGenerator pathGenerator;
+    public PathCreator pathCreator;
+    private BezierPath bezierPath;
+    private VertexPath path;
+
+    [SerializeField] private GameObject speedArrow;
+    private GameObject speedCheckPoint;
+    private GameObject navCheckPoint;
 
     private const string HORIZONTAL = "Horizontal";
     private const string VERTICAL = "Vertical";
 
-    public bool autoPilot; //{get {return autoPilot;} set{ autoPilot = true; }}
+    public bool autoPilot;
 
-    public float horizontalInput; //{get;}
-    public float verticalInput; //{get;}
-    public float currentSteeringAngle; //{get;}
-    public float steeringAngle; //{get;}
-    public float currentBrakeForce; //{get;}
-    public float distance; //{get;}
-    public float steeringCoefficient; //{get;}
-    public float distanceCoefficient; //{get;}
-    public bool isBraking; //{get;}
+    public float horizontalInput; 
+    public float verticalInput; 
+    public float currentSteeringAngle; 
+    public float steeringAngle; 
+    public float currentBrakeForce; 
+    public float distance; 
+    public float steeringCoefficient; 
+    public float distanceCoefficient; 
+    public bool isBraking; 
+    public float maxSpeedCoefficiant = 0.7f;
+    public float maxBreakForce = 1000;
+    public float speed;
+
+    public int currentNavCheckPointIndex = 0;
+    public int currentSpeedCheckPointIndex = 10;
     
     [SerializeField] private float motorForce;
     [SerializeField] private float brakeForce;
@@ -27,7 +41,6 @@ public class CarController : MonoBehaviour
 
     [SerializeField] private float minDistance;
     [SerializeField] private float maxDistance;
-    [SerializeField] private Transform leader;
 
     [SerializeField] private WheelCollider frontLeftWheelCollider;
     [SerializeField] private WheelCollider frontRightWheelCollider;
@@ -44,15 +57,27 @@ public class CarController : MonoBehaviour
     void Start()
     {
         autoPilot = true;
+        InitObjects();
     }
 
     private void FixedUpdate()
     {
-       // transform.position = instance.transform.position;
         GetInput();
+        HandleCheckPoint();
         HandleMotor();
         HandleSteering();
         UpdateWheels();
+    }
+
+    void InitObjects ()
+    {
+
+        pathGenerator = GameObject.Find("GenRoad").GetComponent<PathGenerator>();
+        pathCreator = pathGenerator.pathCreator;
+        bezierPath = pathGenerator.bezierPath;
+        path = pathGenerator.path;
+        Quaternion speedCheckPointRot = Quaternion.LookRotation(path.localPoints[currentSpeedCheckPointIndex], Vector3.up);
+        speedCheckPoint = (GameObject) Instantiate(speedArrow, path.localPoints[currentSpeedCheckPointIndex], speedCheckPointRot);
     }
 
     private void GetInput()
@@ -60,6 +85,21 @@ public class CarController : MonoBehaviour
         horizontalInput = Input.GetAxis(HORIZONTAL);
         verticalInput = Input.GetAxis(VERTICAL);
         isBraking = Input.GetKey(KeyCode.Space);
+    }
+
+    private void HandleCheckPoint()
+    {
+        if(currentNavCheckPointIndex < path.localPoints.Length && 
+            Mathf.Abs(Vector3.Distance(path.localPoints[currentNavCheckPointIndex], car.transform.position)) <= 3f){
+            currentNavCheckPointIndex += 1;
+            currentSpeedCheckPointIndex += 1;
+            if(speedCheckPoint != null)
+            {
+                speedCheckPoint.transform.position = path.localPoints[currentSpeedCheckPointIndex];
+                speedCheckPoint.transform.rotation = Quaternion.LookRotation(path.localPoints[currentSpeedCheckPointIndex], Vector3.up);
+            }
+        }
+        speed = transform.GetComponent<Rigidbody>().velocity.magnitude;
     }
 
     private void HandleMotor()
@@ -77,46 +117,21 @@ public class CarController : MonoBehaviour
             currentBrakeForce = isBraking ? brakeForce : 0f;
         }
         ApplyBraking();
-
     }
 
     private void HandleSpeed()
     {
-        distance = Vector3.Distance(leader.transform.position, car.transform.position);
+        float currentSteeringAngle = Vector3.SignedAngle(path.localPoints[currentSpeedCheckPointIndex], transform.forward, Vector3.up);
+        float speedCoefficient = Mathf.Max(Mathf.Abs((currentSteeringAngle + maxSteeringAngle) / ((maxSteeringAngle + 10)*2)), maxSpeedCoefficiant);
 
-        steeringCoefficient = (currentSteeringAngle + maxSteeringAngle) / ((maxSteeringAngle + 10)*2);
-        distanceCoefficient = ((distance - minDistance) /(maxDistance - minDistance));
-
-        float adjSteeringCoefficient = Mathf.Max(Mathf.Abs((currentSteeringAngle + maxSteeringAngle) / ((maxSteeringAngle + 10)*2)), 0.3f);
-        float adjDistanceCoefficient = Mathf.Min(Mathf.Abs(((distance - minDistance) /(maxDistance - minDistance))),0.5f);
-
-        if( distance <= minDistance )
+        if(speed >= 6 && Mathf.Abs(currentSteeringAngle) >=15)
         {
             currentBrakeForce = 3000;
-            adjDistanceCoefficient = 0;
-            adjSteeringCoefficient = 0;
-        } else if (distance >= maxDistance )
-        {
+        } else {
             currentBrakeForce = 0;
         }
-
-        frontLeftWheelCollider.motorTorque = adjSteeringCoefficient * adjDistanceCoefficient * motorForce;
-        frontRightWheelCollider.motorTorque = adjSteeringCoefficient * adjDistanceCoefficient * motorForce;
-
-        string brakeLog = (distance <= minDistance) ? "\nbreak!" : "";
-
-        /*
-        Debug.Log(
-            "steeringAngle: " + currentSteeringAngle + 
-            "\nsteerCoefficient: " + steeringCoefficient + 
-            "\nadjSteerCoefficient: " + adjSteeringCoefficient + 
-            "\ndisCoefficient: "+ distanceCoefficient +
-            "\nadjDisCoefficient: "+ adjDistanceCoefficient + 
-            "\ndistance: "+ distance + 
-            "\ncurrentBrakeForce: "+ currentBrakeForce +
-            brakeLog
-        );
-        */
+        frontLeftWheelCollider.motorTorque = speedCoefficient * motorForce;
+        frontRightWheelCollider.motorTorque = speedCoefficient * motorForce;
     }
 
     private void ApplyBraking()
@@ -135,14 +150,13 @@ public class CarController : MonoBehaviour
         }
         else
         {
-            var relativePos = leader.position - transform.position;
+            var relativePos = path.localPoints[currentNavCheckPointIndex] - transform.position;
             var targetRotation = Quaternion.LookRotation(relativePos);
             float y = transform.eulerAngles.y;
             var DeltaAngle = Mathf.DeltaAngle(y, targetRotation.eulerAngles.y);
             float delta = Mathf.Clamp(DeltaAngle, -1, 1);
             currentSteeringAngle = maxSteeringAngle * delta;
         }
- 
 
         frontLeftWheelCollider.steerAngle = currentSteeringAngle;
         frontRightWheelCollider.steerAngle = currentSteeringAngle;
@@ -162,7 +176,7 @@ public class CarController : MonoBehaviour
         Quaternion rot;
 
         wheelCollider.GetWorldPose(out pos, out rot);
-        wheelTransform.rotation = rot; //Quaternion.Inverse(rot);
+        wheelTransform.rotation = rot;
         wheelTransform.position = pos;
     }
 }
