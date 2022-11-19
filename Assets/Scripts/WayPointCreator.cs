@@ -15,8 +15,9 @@ public class WayPointCreator : MonoBehaviour
 
     public Vector3[] waypoints;
 
-    [SerializeField] private GameObject marker;
-    private GameObject[] markerHolder;
+    //=== FOR DEBUGGING WAYPOINTS ===
+    //[SerializeField] private GameObject marker;
+    //private GameObject[] markerHolder;
 
     void Start()
     {
@@ -37,28 +38,24 @@ public class WayPointCreator : MonoBehaviour
     {
         int size = (int) (distance / minDistance) + 1;
         waypoints = new Vector3[size];
-
-        markerHolder = new GameObject[size];
-
         waypoints[0] = path.localPoints[0];
-        waypoints[0].y = waypoints[0].y + 2;
-        Quaternion markerRot0 = Quaternion.LookRotation(waypoints[0], Vector3.up);
-        markerHolder[0] = (GameObject) Instantiate(marker, waypoints[0], markerRot0);
+
+        //=== FOR DEBUGGING WAYPOINTS ===
+        //markerHolder = new GameObject[size];
+        //waypoints[0].y = waypoints[0].y + 2;
+        //Quaternion markerRot0 = Quaternion.LookRotation(waypoints[0], Vector3.up);
+        //markerHolder[0] = (GameObject) Instantiate(marker, waypoints[0], markerRot0);
 
         for(int i = 1; i<size; i++)
         {
             float d = i*minDistance;
             waypoints[i] = path.GetPointAtDistance(d);
-            Debug.Log(i + ": " + waypoints[i]);
-            waypoints[i].y = waypoints[i].y + 2;
-            Quaternion markerRot = Quaternion.LookRotation(waypoints[i], Vector3.up);
-            markerHolder[i] = (GameObject) Instantiate(marker, waypoints[i], markerRot);
-        }
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+            //=== FOR DEBUGGING WAYPOINTS ===
+            //Debug.Log(i + ": " + waypoints[i]);
+            //waypoints[i].y = waypoints[i].y + 2;
+            //Quaternion markerRot = Quaternion.LookRotation(waypoints[i], Vector3.up);
+            //markerHolder[i] = (GameObject) Instantiate(marker, waypoints[i], markerRot);
+        }
     }
 }
