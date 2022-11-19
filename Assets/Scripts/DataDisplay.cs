@@ -40,6 +40,9 @@ public class DataDisplay : MonoBehaviour
             displayText += "current nav checkpoint index: " + carController.currentNavCheckPointIndex + "\n";
             displayText += "current speed checkpoint index: " + carController.currentSpeedCheckPointIndex + "\n";
             displayText += "car position: " + car.transform.position + "\n";
+            displayText += "sdlp sum: " + carController.sdlpSum + "\n";
+            displayText += "number of measurements: " + carController.n + "\n";
+            displayText += "current sdlp: " + carController.GetSdlp() + "\n";
             displayText += "speed: " + (int)((carController.speed*3.6)) + "km/h";
 
             DataText.text = displayText;

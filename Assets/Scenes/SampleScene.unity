@@ -151,6 +151,8 @@ MonoBehaviour:
   maxSpeedCoefficiant: 0.7
   maxBreakForce: 1000
   speed: 0
+  sdlpSum: 0
+  n: 0
   currentNavCheckPointIndex: 0
   currentSpeedCheckPointIndex: 7
   motorForce: 2000
@@ -177,6 +179,7 @@ GameObject:
   m_Component:
   - component: {fileID: 236509126}
   - component: {fileID: 236509127}
+  - component: {fileID: 236509128}
   m_Layer: 0
   m_Name: GenRoad
   m_TagString: Untagged
@@ -232,6 +235,24 @@ MonoBehaviour:
   undersideMaterial: {fileID: 2100000, guid: c1d8d882244c5344fa86a8fd23246f81, type: 2}
   textureTiling: 1
   meshHolder: {fileID: 236509125}
+  exclamationMark: {fileID: 6445215557665579778, guid: 0b6974eba934441c18f15ca095879ea1, type: 3}
+--- !u!114 &236509128
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 236509125}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d9d16ca5802c4bb5bac0b4de32da939, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pathGenerator: {fileID: 0}
+  pathCreator: {fileID: 0}
+  distance: 0
+  waypoints: []
+  marker: {fileID: 1885633427637291187, guid: f8c1db59dcd87430baec2dd23bb26f95, type: 3}
 --- !u!1 &284203182
 GameObject:
   m_ObjectHideFlags: 0

@@ -6,7 +6,6 @@ using System.Linq;
 
 public class PathGenerator : MonoBehaviour
 {
-
     public List<Vector3> points = new List<Vector3>();
     public PathCreator pathCreator;
     private Autopilot autoPilot;
@@ -28,11 +27,17 @@ public class PathGenerator : MonoBehaviour
     MeshRenderer meshRenderer;
     Mesh mesh;
 
+    [SerializeField] private GameObject exclamationMark;
+    GameObject exclamationMarkHolder;
+    float exclamationMarkTime;
+    Vector3 exclamationMarkPosition;
+
     // Awake is called before Start
     void Awake()
     {
         InitObjects ();
         GenerateRoad ();
+        PlaceExclamationMark();
     }
 
     // Update is called once per frame
@@ -88,7 +93,7 @@ public class PathGenerator : MonoBehaviour
         }
     }
 
-        bool IsLastSegementIntersecting(Vector3 lastPoint, Vector3 lastSegement)
+    bool IsLastSegementIntersecting(Vector3 lastPoint, Vector3 lastSegement)
     {
         //Vector3 [] lastSegmentPoints = {offset-lastPoint, offset-lastSegement};
         Vector3 [] lastSegmentPoints = {lastPoint, lastSegement};
@@ -277,5 +282,14 @@ public class PathGenerator : MonoBehaviour
             meshRenderer.sharedMaterials = new Material[] { roadMaterial, undersideMaterial, undersideMaterial };
             meshRenderer.sharedMaterials[0].mainTextureScale = new Vector3 (1, textureTiling);
         }
+    }
+
+    void PlaceExclamationMark()
+    {
+        exclamationMarkTime = Random.Range(0.0f, 1.0f);
+        exclamationMarkPosition = path.GetPointAtTime(exclamationMarkTime);
+        exclamationMarkPosition.y += 2.0f;
+        Quaternion exclamationMarkRot = Quaternion.identity;
+        exclamationMarkHolder = (GameObject) Instantiate(exclamationMark, exclamationMarkPosition, exclamationMarkRot);
     }
 }

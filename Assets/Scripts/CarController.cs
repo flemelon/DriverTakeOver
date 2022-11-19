@@ -31,6 +31,8 @@ public class CarController : MonoBehaviour
     public float maxSpeedCoefficiant = 0.7f;
     public float maxBreakForce = 1000;
     public float speed;
+    public float sdlpSum=0;
+    public int n=0;
 
     public int currentNavCheckPointIndex = 0;
     public int currentSpeedCheckPointIndex = 10;
@@ -67,6 +69,7 @@ public class CarController : MonoBehaviour
         HandleMotor();
         HandleSteering();
         UpdateWheels();
+        CalculateSdlp();
     }
 
     void InitObjects ()
@@ -178,5 +181,14 @@ public class CarController : MonoBehaviour
         wheelCollider.GetWorldPose(out pos, out rot);
         wheelTransform.rotation = rot;
         wheelTransform.position = pos;
+    }
+
+    private void CalculateSdlp(){
+        sdlpSum += path.GetClosestDistanceAlongPath(car.transform.position);
+        n++;
+    }
+
+    public float GetSdlp(){
+        return Mathf.Sqrt((sdlpSum * sdlpSum)/n);
     }
 }
