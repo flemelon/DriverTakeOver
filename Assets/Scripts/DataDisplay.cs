@@ -33,17 +33,14 @@ public class DataDisplay : MonoBehaviour
             displayText += "verticalInput: " + carController.verticalInput + "\n";
             displayText += "currentSteeringAngle: " + carController.currentSteeringAngle + "\n";
             displayText += "currentBrakeForce: " + carController.currentBrakeForce + "\n";
-            displayText += "distance: " + carController.distance + "\n";
-            displayText += "steeringCoefficient: " + carController.steeringCoefficient + "\n";
-            displayText += "distanceCoefficient: " + carController.distanceCoefficient + "\n";
-            displayText += "isBraking: " + carController.isBraking + "\n";
             displayText += "current nav checkpoint index: " + carController.currentNavCheckPointIndex + "\n";
             displayText += "current speed checkpoint index: " + carController.currentSpeedCheckPointIndex + "\n";
             displayText += "car position: " + car.transform.position + "\n";
-            displayText += "sdlp sum: " + carController.sdlpSum + "\n";
-            displayText += "number of measurements: " + carController.n + "\n";
-            displayText += "current sdlp: " + carController.GetSdlp() + "\n";
-            displayText += "speed: " + (int)((carController.speed*3.6)) + "km/h";
+            displayText += "sdlp sum: " + carController.track.sdlpSum + "\n";
+            displayText += "number of measurements: " + carController.track.n + "\n";
+            displayText += "current sdlp: " + carController.track.GetSdlp() + "\n";
+            displayText += "current maxSpeed: " + (int) (carController.track.maxSpeed[carController.currentNavCheckPointIndex]*3.6) + "km/h\n";
+            displayText += "speed: " + (int)(carController.speed*3.6) + "km/h";
 
             DataText.text = displayText;
 

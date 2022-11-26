@@ -6,6 +6,7 @@ using PathCreation;
 public class CarController : MonoBehaviour
 {
     public PathGenerator pathGenerator;
+    public Track track;
     public PathCreator pathCreator;
     private BezierPath bezierPath;
     private VertexPath path;
@@ -24,19 +25,16 @@ public class CarController : MonoBehaviour
     public float currentSteeringAngle; 
     public float steeringAngle; 
     public float currentBrakeForce; 
-    public float distance; 
     public float steeringCoefficient; 
     public float distanceCoefficient; 
     public bool isBraking; 
-    public float maxSpeedCoefficiant = 0.7f;
+    public float maxSpeedCoefficiant = 0.6f;
     public float maxBreakForce = 1000;
     public float speed;
-    public float sdlpSum=0;
-    public int n=0;
 
     public int currentNavCheckPointIndex = 0;
     public int currentSpeedCheckPointIndex = 10;
-    
+
     [SerializeField] private float motorForce;
     [SerializeField] private float brakeForce;
     [SerializeField] private float maxSteeringAngle;
@@ -69,18 +67,18 @@ public class CarController : MonoBehaviour
         HandleMotor();
         HandleSteering();
         UpdateWheels();
-        CalculateSdlp();
     }
 
     void InitObjects ()
     {
 
         pathGenerator = GameObject.Find("GenRoad").GetComponent<PathGenerator>();
+        track = GameObject.Find("GenRoad").GetComponent<Track>();
         pathCreator = pathGenerator.pathCreator;
         bezierPath = pathGenerator.bezierPath;
         path = pathGenerator.path;
-        Quaternion speedCheckPointRot = Quaternion.LookRotation(path.localPoints[currentSpeedCheckPointIndex], Vector3.up);
-        speedCheckPoint = (GameObject) Instantiate(speedArrow, path.localPoints[currentSpeedCheckPointIndex], speedCheckPointRot);
+        Quaternion speedCheckPointRot = Quaternion.LookRotation(track.waypoints[currentSpeedCheckPointIndex], Vector3.up);
+        speedCheckPoint = (GameObject) Instantiate(speedArrow, track.waypoints[currentSpeedCheckPointIndex], speedCheckPointRot);
     }
 
     private void GetInput()
@@ -92,15 +90,19 @@ public class CarController : MonoBehaviour
 
     private void HandleCheckPoint()
     {
-        if(currentNavCheckPointIndex < path.localPoints.Length && 
-            Mathf.Abs(Vector3.Distance(path.localPoints[currentNavCheckPointIndex], car.transform.position)) <= 3f){
-            currentNavCheckPointIndex += 1;
-            currentSpeedCheckPointIndex += 1;
+        if(currentNavCheckPointIndex < track.waypoints.Length && 
+            Mathf.Abs(Vector3.Distance(track.waypoints[currentNavCheckPointIndex], car.transform.position)) <= 3f){
+            currentNavCheckPointIndex = 
+                currentNavCheckPointIndex < track.waypoints.Length? currentNavCheckPointIndex + 1 : track.waypoints.Length - 1;
+            int tmpSpeedCheckPointIndex = (currentNavCheckPointIndex + (2 * (int)speed));
+            currentSpeedCheckPointIndex = 
+                tmpSpeedCheckPointIndex < track.waypoints.Length ? tmpSpeedCheckPointIndex : track.waypoints.Length - 1 ;
             if(speedCheckPoint != null)
             {
-                speedCheckPoint.transform.position = path.localPoints[currentSpeedCheckPointIndex];
-                speedCheckPoint.transform.rotation = Quaternion.LookRotation(path.localPoints[currentSpeedCheckPointIndex], Vector3.up);
+                speedCheckPoint.transform.position = track.waypoints[currentSpeedCheckPointIndex];
+                speedCheckPoint.transform.rotation = Quaternion.LookRotation(track.waypoints[currentSpeedCheckPointIndex], Vector3.up);
             }
+
         }
         speed = transform.GetComponent<Rigidbody>().velocity.magnitude;
     }
@@ -120,14 +122,16 @@ public class CarController : MonoBehaviour
             currentBrakeForce = isBraking ? brakeForce : 0f;
         }
         ApplyBraking();
-    }
+    } 
 
     private void HandleSpeed()
     {
-        float currentSteeringAngle = Vector3.SignedAngle(path.localPoints[currentSpeedCheckPointIndex], transform.forward, Vector3.up);
+        float currentSteeringAngle = Vector3.SignedAngle(track.waypoints[currentSpeedCheckPointIndex], track.waypoints[currentSpeedCheckPointIndex] - transform.forward, Vector3.up);
         float speedCoefficient = Mathf.Max(Mathf.Abs((currentSteeringAngle + maxSteeringAngle) / ((maxSteeringAngle + 10)*2)), maxSpeedCoefficiant);
 
-        if(speed >= 6 && Mathf.Abs(currentSteeringAngle) >=15)
+        if((speed > 6 && Mathf.Abs(currentSteeringAngle) >= 15) 
+            || (speed >  track.maxSpeed[currentSpeedCheckPointIndex]) 
+            || currentNavCheckPointIndex >= track.waypoints.Length - 1)
         {
             currentBrakeForce = 3000;
         } else {
@@ -153,7 +157,7 @@ public class CarController : MonoBehaviour
         }
         else
         {
-            var relativePos = path.localPoints[currentNavCheckPointIndex] - transform.position;
+            var relativePos = track.waypoints[currentNavCheckPointIndex] - transform.position;
             var targetRotation = Quaternion.LookRotation(relativePos);
             float y = transform.eulerAngles.y;
             var DeltaAngle = Mathf.DeltaAngle(y, targetRotation.eulerAngles.y);
@@ -181,14 +185,5 @@ public class CarController : MonoBehaviour
         wheelCollider.GetWorldPose(out pos, out rot);
         wheelTransform.rotation = rot;
         wheelTransform.position = pos;
-    }
-
-    private void CalculateSdlp(){
-        sdlpSum += path.GetClosestDistanceAlongPath(car.transform.position);
-        n++;
-    }
-
-    public float GetSdlp(){
-        return Mathf.Sqrt((sdlpSum * sdlpSum)/n);
     }
 }

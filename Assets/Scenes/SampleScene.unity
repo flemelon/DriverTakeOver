@@ -136,6 +136,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pathGenerator: {fileID: 0}
+  track: {fileID: 0}
   pathCreator: {fileID: 0}
   speedArrow: {fileID: 911498767203574450, guid: df15d760d59ac45a993cf45c58734ab5, type: 3}
   autoPilot: 0
@@ -151,8 +152,6 @@ MonoBehaviour:
   maxSpeedCoefficiant: 0.7
   maxBreakForce: 1000
   speed: 0
-  sdlpSum: 0
-  n: 0
   currentNavCheckPointIndex: 0
   currentSpeedCheckPointIndex: 7
   motorForce: 2000
@@ -199,7 +198,7 @@ Transform:
   m_LocalScale: {x: 2, y: 0.5, z: 0.5}
   m_Children: []
   m_Father: {fileID: 1175548990}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &236509127
 MonoBehaviour:
@@ -248,11 +247,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d9d16ca5802c4bb5bac0b4de32da939, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pathGenerator: {fileID: 0}
+  pathGenerator: {fileID: 236509127}
   pathCreator: {fileID: 0}
   distance: 0
   waypoints: []
-  marker: {fileID: 1885633427637291187, guid: f8c1db59dcd87430baec2dd23bb26f95, type: 3}
+  maxSpeed: []
+  sdlpSum: 0
+  n: 0
+  checkpoint: {fileID: 1187495385112214088, guid: c9cd2a114c73a4bebbdb79872f84e10d, type: 3}
 --- !u!1 &284203182
 GameObject:
   m_ObjectHideFlags: 0
@@ -451,7 +453,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1175548990}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &456536776
 GameObject:
@@ -546,7 +548,7 @@ Transform:
   m_LocalScale: {x: 200, y: 0.1, z: 200}
   m_Children: []
   m_Father: {fileID: 1175548990}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1175548987
 GameObject:
@@ -575,7 +577,6 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 2131844569}
   - {fileID: 2138677393}
   - {fileID: 2806714669820642344}
   - {fileID: 456536780}
@@ -702,7 +703,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1175548990}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 10, y: 0, z: 0}
 --- !u!114 &1736194357
 MonoBehaviour:
@@ -828,43 +829,13 @@ RectTransform:
   m_Children:
   - {fileID: 284203185}
   m_Father: {fileID: 1175548990}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!1 &2131844568
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2131844569}
-  m_Layer: 0
-  m_Name: ArrowHolder
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2131844569
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2131844568}
-  m_LocalRotation: {x: -0, y: -0, z: 0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: 5.726768, y: -0.6105585, z: 6.9180794}
-  m_LocalScale: {x: 3, y: 3, z: 3}
-  m_Children: []
-  m_Father: {fileID: 1175548990}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
 --- !u!1 &2138677391
 GameObject:
   m_ObjectHideFlags: 0
@@ -956,7 +927,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1175548990}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 45, y: 130, z: 90}
 --- !u!4 &11607767686862509
 Transform:
@@ -1309,7 +1280,7 @@ Transform:
   - {fileID: 7075323475361605119}
   - {fileID: 7760310119038462924}
   m_Father: {fileID: 1175548990}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3001691315256657835
 GameObject:
@@ -1325,7 +1296,7 @@ GameObject:
   - component: {fileID: 1033180800771877757}
   m_Layer: 0
   m_Name: Body
-  m_TagString: Untagged
+  m_TagString: Car
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
