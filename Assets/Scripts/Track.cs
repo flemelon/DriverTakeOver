@@ -7,8 +7,8 @@ public class Track : MonoBehaviour
 {
     public PathGenerator pathGenerator;
     public PathCreator pathCreator;
-    private BezierPath bezierPath;
-    private VertexPath path;
+    public BezierPath bezierPath;
+    public VertexPath path;
     public float distance;
     private float minDistance = 1.0f;
 
@@ -74,13 +74,18 @@ public class Track : MonoBehaviour
                 }else {
                     maxSpeed[i] = 12f;
                 }
-                Debug.Log("MaxSpeed: " + maxSpeed[i]);
+                //Debug.Log("MaxSpeed: " + maxSpeed[i]);
             }
             else 
             {
                 maxSpeed[i] = 6f;
             }
         }
+    }
+
+    public float GetCurrentDistance(Vector3 position)
+    {
+        return path.GetClosestDistanceAlongPath(position);
     }
 
     public void AddSdlpDistance(float sdlpDistance)

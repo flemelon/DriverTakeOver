@@ -135,30 +135,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d9eba298b7d74900ae7c831db40ebed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pathGenerator: {fileID: 0}
-  track: {fileID: 0}
-  pathCreator: {fileID: 0}
-  speedArrow: {fileID: 911498767203574450, guid: df15d760d59ac45a993cf45c58734ab5, type: 3}
-  autoPilot: 0
-  horizontalInput: 0
-  verticalInput: 0
-  currentSteeringAngle: 0
   steeringAngle: 0
   currentBrakeForce: 0
-  distance: 0
-  steeringCoefficient: 0
-  distanceCoefficient: 0
-  isBraking: 0
-  maxSpeedCoefficiant: 0.7
-  maxBreakForce: 1000
-  speed: 0
-  currentNavCheckPointIndex: 0
-  currentSpeedCheckPointIndex: 7
+  maxBreakForce: 3000
   motorForce: 2000
   brakeForce: 3000
   maxSteeringAngle: 30
-  minDistance: 3
-  maxDistance: 3.2
   frontLeftWheelCollider: {fileID: 2737710317212339334}
   frontRightWheelCollider: {fileID: 4810446887819943521}
   rearLeftWheelCollider: {fileID: 3164543666980616692}
@@ -249,12 +231,55 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pathGenerator: {fileID: 236509127}
   pathCreator: {fileID: 0}
+  bezierPath:
+    points: []
+    isClosed: 0
+    space: 0
+    controlMode: 0
+    autoControlLength: 0
+    boundsUpToDate: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    perAnchorNormalsAngle: []
+    globalNormalsAngle: 0
+    flipNormals: 0
   distance: 0
   waypoints: []
   maxSpeed: []
   sdlpSum: 0
   n: 0
   checkpoint: {fileID: 1187495385112214088, guid: c9cd2a114c73a4bebbdb79872f84e10d, type: 3}
+--- !u!1 &256860789
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 256860790}
+  m_Layer: 0
+  m_Name: Simulated
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &256860790
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 256860789}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 439270961}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &284203182
 GameObject:
   m_ObjectHideFlags: 0
@@ -455,6 +480,39 @@ Transform:
   m_Father: {fileID: 1175548990}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &439270960
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 439270961}
+  m_Layer: 0
+  m_Name: Drivers
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &439270961
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 439270960}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 1924185541}
+  - {fileID: 256860790}
+  - {fileID: 499297059}
+  m_Father: {fileID: 1175548990}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &456536776
 GameObject:
   m_ObjectHideFlags: 0
@@ -550,6 +608,36 @@ Transform:
   m_Father: {fileID: 1175548990}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &499297058
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 499297059}
+  m_Layer: 0
+  m_Name: Human
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &499297059
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 499297058}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 439270961}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1175548987
 GameObject:
   m_ObjectHideFlags: 0
@@ -584,6 +672,7 @@ Transform:
   - {fileID: 324057411}
   - {fileID: 1842384299}
   - {fileID: 236509126}
+  - {fileID: 439270961}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -836,6 +925,65 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!1 &1924185540
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1924185541}
+  - component: {fileID: 1924185542}
+  m_Layer: 0
+  m_Name: Autopilot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1924185541
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1924185540}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 439270961}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1924185542
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1924185540}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d63ca8d8549f441790b8a14e2426733, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pathGenerator: {fileID: 0}
+  track: {fileID: 0}
+  pathCreator: {fileID: 0}
+  speedArrow: {fileID: 0}
+  currentNavCheckPointIndex: 0
+  currentSpeedCheckPointIndex: 10
+  maxSpeedCoefficiant: 0.6
+  maxSteeringAngle: 30
+  steeringAngle: 0
+  speed: 0
+  maxSpeed: 12
+  minSpeed: 6
+  foresightDistanceStep: 2
+  throttle: 0.5
+  minThrottle: -0.5
+  maxThrottle: 0.5
 --- !u!1 &2138677391
 GameObject:
   m_ObjectHideFlags: 0
