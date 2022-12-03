@@ -246,7 +246,9 @@ MonoBehaviour:
     flipNormals: 0
   distance: 0
   waypoints: []
-  maxSpeed: []
+  speedLimit: []
+  maxSpeed: 14
+  minSpeed: 8
   sdlpSum: 0
   n: 0
   checkpoint: {fileID: 1187495385112214088, guid: c9cd2a114c73a4bebbdb79872f84e10d, type: 3}
@@ -971,16 +973,13 @@ MonoBehaviour:
   pathGenerator: {fileID: 0}
   track: {fileID: 0}
   pathCreator: {fileID: 0}
-  speedArrow: {fileID: 0}
+  speedArrow: {fileID: 911498767203574450, guid: df15d760d59ac45a993cf45c58734ab5, type: 3}
   currentNavCheckPointIndex: 0
   currentSpeedCheckPointIndex: 10
   maxSpeedCoefficiant: 0.6
   maxSteeringAngle: 30
   steeringAngle: 0
   speed: 0
-  maxSpeed: 12
-  minSpeed: 6
-  foresightDistanceStep: 2
   throttle: 0.5
   minThrottle: -0.5
   maxThrottle: 0.5

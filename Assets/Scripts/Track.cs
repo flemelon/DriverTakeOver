@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using PathCreation;
+using System;
 
 public class Track : MonoBehaviour
 {
@@ -13,7 +14,10 @@ public class Track : MonoBehaviour
     private float minDistance = 1.0f;
 
     public Vector3[] waypoints;
-    public float[] maxSpeed;
+    public float[] speedLimit;
+
+    public float maxSpeed = 13;
+    public float minSpeed = 8;
 
     private float minSdlpDistance = 0.0f;
 
@@ -43,7 +47,7 @@ public class Track : MonoBehaviour
     {
         int size = (int) (distance / minDistance) + 1;
         waypoints = new Vector3[size];
-        maxSpeed = new float[size];
+        speedLimit = new float[size];
 
         waypoints[0] = path.localPoints[0];
 
@@ -53,7 +57,7 @@ public class Track : MonoBehaviour
         checkpointHolder[0] = (GameObject) Instantiate(checkpoint, waypoints[0], checkpointRot0);
         checkpointHolder[0].GetComponent<CheckpointSingle>().SetTrack(this);
         
-        maxSpeed[0] = 6;
+        speedLimit[0] = minSpeed;
         for(int i = 1; i<size; i++)
         {
             float d = i*minDistance;
@@ -63,23 +67,34 @@ public class Track : MonoBehaviour
             checkpointHolder[i] = (GameObject) Instantiate(checkpoint, waypoints[i], checkpointRot);
             checkpointHolder[i].GetComponent<CheckpointSingle>().SetTrack(this);
 
-            if(i>30)
+            Vector3 vec1 = path.GetNormalAtDistance(d-minDistance);
+            Vector3 vec2 = path.GetNormalAtDistance(d);
+            float radius = Utils.RadiusLength(waypoints[i-1], vec1, waypoints[i], vec2);
+            float factor = 0.8f;
+
+            if (radius > maxSpeed)
             {
-                float angle = Mathf.Abs(Vector3.SignedAngle(waypoints[i], waypoints[i] - waypoints[i-7], Vector3.up));
-                //Debug.Log("Angle: "+ angle);
-                if(angle > 30){
-                    maxSpeed[i] = 6f;
-                }else if(angle > 15){
-                    maxSpeed[i] = 9f;
-                }else {
-                    maxSpeed[i] = 12f;
-                }
-                //Debug.Log("MaxSpeed: " + maxSpeed[i]);
-            }
+                speedLimit[i] = maxSpeed;
+            } 
             else 
             {
-                maxSpeed[i] = 6f;
+                if(radius < minSpeed)
+                {
+                    speedLimit[i] = minSpeed;
+                }
+                else
+                {
+                    speedLimit[i] = radius * factor;
+                }
             }
+        }
+
+        float[] shiftedSpeedLimit = new float[size];
+        int shiftingSize = 15;
+        Array.Copy(speedLimit, shiftingSize, shiftedSpeedLimit, 0, speedLimit.Length - shiftingSize);
+        for(int i = speedLimit.Length - 1; i >=shiftingSize; i--)
+        {
+            shiftedSpeedLimit[i] = minSpeed;
         }
     }
 

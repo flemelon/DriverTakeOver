@@ -26,10 +26,6 @@ public class Autopilot : MonoBehaviour, IDriver
     public float steeringAngle;
 
     public float speed;
-    public float maxSpeed = 12f;
-    public float minSpeed = 6f;
-    public float foresightDistanceStep = 2;
-    public List<Tuple<float, float, Vector3>> foresight;
     public float throttle = 0.5f;
     public float minThrottle = -0.5f;
     public float maxThrottle = 0.5f;
@@ -53,21 +49,6 @@ public class Autopilot : MonoBehaviour, IDriver
         pathGenerator = GameObject.Find("GenRoad").GetComponent<PathGenerator>();
         track = GameObject.Find("GenRoad").GetComponent<Track>();
         carController = GameObject.Find("Car").GetComponent<CarController>();
-        foresight = new List<Tuple<float, float, Vector3>>();
-
-        Vector3 prevPoint = carController.GetPosition();
-        float dst = track.path.GetClosestDistanceAlongPath(prevPoint);
-
-        for(int i = 0; dst < (track.path.length + foresightDistanceStep) && i <= 15; i++)
-        {
-            float frstDst = dst+(i*foresightDistanceStep);
-            Vector3 currentPoint = track.path.GetDirectionAtDistance(frstDst);
-
-            float speedLimit = CalculateSpeed(currentPoint, currentPoint - prevPoint); 
-            foresight.Add(Tuple.Create(frstDst, speedLimit, currentPoint));
-            prevPoint = currentPoint;
-            //Debug.Log(frstDst + ", " + speedLimit + ", " + currentPoint );
-        }
 
         Quaternion speedCheckPointRot = Quaternion.LookRotation(track.waypoints[currentNavCheckPointIndex], Vector3.up);
         speedCheckPoint = (GameObject) Instantiate(speedArrow, track.waypoints[currentNavCheckPointIndex], speedCheckPointRot);
@@ -104,21 +85,20 @@ public class Autopilot : MonoBehaviour, IDriver
 
     private void HandleSpeed()
     {
-        string output = "";
-        foreach(Tuple<float, float, Vector3> f in foresight)
-        {
-            output += (int) (f.Item2 * 3.6f) + "km/h, ";
-        }
-        Debug.Log(output);
         speed = carController.GetSpeed();
-        // TODO: needs revision
-        float currentDistance = track.GetCurrentDistance(carController.GetPosition());
-        
-        if ((speed >= (foresight[0].Item2 * 1.1f)) ) //|| ((speed >= minSpeed) && (carController.steeringAngle > 15f)))
+        float currentMaxSpeed = track.speedLimit[currentNavCheckPointIndex];
+
+        if(currentNavCheckPointIndex + (int)speed < track.speedLimit.Length 
+            && currentMaxSpeed > track.speedLimit[currentNavCheckPointIndex + (int)speed])
+        {
+            currentMaxSpeed = track.speedLimit[currentNavCheckPointIndex + (int)speed];
+        }
+
+        if ((speed >= (currentMaxSpeed * 1.1f)) ) //|| ((speed >= minSpeed) && (carController.steeringAngle > 15f)))
         {
             throttle = throttle <= minThrottle ? minThrottle : throttle - 0.2f;
         }
-        else if(speed <= (foresight[0].Item2 * 0.9f))
+        else if(speed <= (currentMaxSpeed * 0.9f))
         {
             throttle = throttle >= maxThrottle ? maxThrottle : throttle + 0.1f;
         } 
@@ -126,31 +106,13 @@ public class Autopilot : MonoBehaviour, IDriver
             throttle = 0;
         }
 
-        carController.SetThrottle(throttle);
-
-        
-        Tuple<float, float, Vector3> last;
-        if (foresight.Count > 0) 
+        if(currentNavCheckPointIndex >= track.waypoints.Length - 1)
         {
-            last = foresight[foresight.Count-1];
-            float nextDst = last.Item1 + foresightDistanceStep;
-
-            if(currentDistance >= foresight[0].Item1 && nextDst <= track.path.length)
-            {
-                foresight.RemoveAt(0);
-
-                Vector3 nextPoint = track.path.GetDirectionAtDistance(nextDst);
-                float speedLimit = CalculateSpeed(nextPoint, nextPoint - last.Item3);
-                foresight.Add(Tuple.Create(nextDst, speedLimit, nextPoint));
-                if(speedLimit > foresight[foresight.Count - 1].Item2)
-                {
-                    for(int i = (foresight.Count - 2); i >= (foresight.Count - 5); i--)
-                    {
-                        float newSpeedLimit = foresight[i].Item2 > minSpeed + 2f? foresight[i].Item2 - 2f : minSpeed;  
-                    }
-                }
-            }
+            throttle = -1;
         }
+
+        carController.SetThrottle(throttle);
+        Debug.Log(currentMaxSpeed);
     }
 
     private void HandleSteering()
@@ -173,7 +135,7 @@ public class Autopilot : MonoBehaviour, IDriver
         var delta = Mathf.DeltaAngle(y, targetRotation.eulerAngles.y);
         float normalized = Mathf.Abs(Mathf.Cos(delta%90));
         //Debug.Log("NORMALIZED: " + normalized);
-        float speed =  Mathf.Lerp(minSpeed, maxSpeed, normalized);
+        float speed =  Mathf.Lerp(track.minSpeed, track.maxSpeed, normalized);
         return speed;
     }
 }
