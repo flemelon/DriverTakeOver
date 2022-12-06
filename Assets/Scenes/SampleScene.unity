@@ -138,7 +138,7 @@ MonoBehaviour:
   steeringAngle: 0
   currentBrakeForce: 0
   maxBreakForce: 3000
-  motorForce: 2000
+  motorForce: 1000
   brakeForce: 3000
   maxSteeringAngle: 30
   frontLeftWheelCollider: {fileID: 2737710317212339334}
@@ -980,9 +980,9 @@ MonoBehaviour:
   maxSteeringAngle: 30
   steeringAngle: 0
   speed: 0
-  throttle: 0.5
-  minThrottle: -0.5
-  maxThrottle: 0.5
+  throttle: 1
+  minThrottle: -1
+  maxThrottle: 1
 --- !u!1 &2138677391
 GameObject:
   m_ObjectHideFlags: 0

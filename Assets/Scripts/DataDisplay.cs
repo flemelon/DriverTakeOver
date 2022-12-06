@@ -10,9 +10,7 @@ public class DataDisplay : MonoBehaviour
     private Autopilot autopilot;
     private Track track;
 
-    private float pollingTime = 0.1f;
-    private float time;
-    private int frameCount;
+    private float deltaTime = 0.0f;
 
     private string displayText;
 
@@ -24,34 +22,23 @@ public class DataDisplay : MonoBehaviour
     }
 
     void Update () {
-        time += Time.deltaTime;
+        deltaTime += (Time.unscaledDeltaTime - deltaTime) * 0.1f;
 
-        frameCount++;
+        float msec = deltaTime * 1000.0f;
+        float fps = 1.0f / deltaTime;
+        displayText += string.Format("{0:0.0} ms ({1:0.} fps)", msec, fps) + "\n";
+        displayText += "steering angle: " + carController.steeringAngle + "\n";
+        displayText += "throttle: " + autopilot.throttle + "\n";
+        displayText += "car position: " + car.transform.position + "\n";
+        displayText += "sdlp sum: " + track.sdlpSum + "\n";
+        displayText += "number of measurements: " + track.n + "\n";
+        displayText += "current sdlp: " + track.GetSdlp() + "\n";
+        displayText += "speed: " + (int)(autopilot.speed*3.6) + "km/h";
+        
 
-        if(time >= pollingTime)
-        {
-            int frameRate = Mathf.RoundToInt(frameCount/1f);
-            displayText += frameRate.ToString() + " fps\n";
-            //displayText += "autopilot: " + carController.autoPilot + "\n";
-            //displayText += "horizontalInput: " + carController.horizontalInput + "\n";
-            //displayText += "verticalInput: " + carController.verticalInput + "\n";
-            displayText += "currentSteeringAngle: " + carController.steeringAngle + "\n";
-            displayText += "currentBrakeForce: " + carController.currentBrakeForce + "\n";
-            displayText += "current nav checkpoint index: " + autopilot.currentNavCheckPointIndex + "\n";
-            displayText += "current speed checkpoint index: " + autopilot.currentSpeedCheckPointIndex + "\n";
-            displayText += "car position: " + car.transform.position + "\n";
-            displayText += "sdlp sum: " + track.sdlpSum + "\n";
-            displayText += "number of measurements: " + track.n + "\n";
-            displayText += "current sdlp: " + track.GetSdlp() + "\n";
-            //displayText += "current maxSpeed: " + (int) (autopilot.maxSpeed[carController.currentNavCheckPointIndex]*3.6) + "km/h\n";
-            displayText += "speed: " + (int)(autopilot.speed*3.6) + "km/h";
-            
+        DataText.text = displayText;
 
-            DataText.text = displayText;
-
-            displayText = "";
-            time -= pollingTime;
-            frameCount = 0;
-        }
+        displayText = "";
+        
     }
 }

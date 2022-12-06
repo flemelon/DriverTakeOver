@@ -26,9 +26,9 @@ public class Autopilot : MonoBehaviour, IDriver
     public float steeringAngle;
 
     public float speed;
-    public float throttle = 0.5f;
-    public float minThrottle = -0.5f;
-    public float maxThrottle = 0.5f;
+    public float throttle = 1.0f;
+    public float minThrottle = -1.0f;
+    public float maxThrottle = 1.0f;
 
 
     void Start()
@@ -49,9 +49,6 @@ public class Autopilot : MonoBehaviour, IDriver
         pathGenerator = GameObject.Find("GenRoad").GetComponent<PathGenerator>();
         track = GameObject.Find("GenRoad").GetComponent<Track>();
         carController = GameObject.Find("Car").GetComponent<CarController>();
-
-        Quaternion speedCheckPointRot = Quaternion.LookRotation(track.waypoints[currentNavCheckPointIndex], Vector3.up);
-        speedCheckPoint = (GameObject) Instantiate(speedArrow, track.waypoints[currentNavCheckPointIndex], speedCheckPointRot);
     }
 
     public void SetPathGenerator(PathGenerator pathGenerator)
@@ -94,7 +91,7 @@ public class Autopilot : MonoBehaviour, IDriver
             currentMaxSpeed = track.speedLimit[currentNavCheckPointIndex + (int)speed];
         }
 
-        if ((speed >= (currentMaxSpeed * 1.1f)) ) //|| ((speed >= minSpeed) && (carController.steeringAngle > 15f)))
+        if ((speed >= (currentMaxSpeed * 1.1f)) )
         {
             throttle = throttle <= minThrottle ? minThrottle : throttle - 0.2f;
         }
@@ -102,7 +99,8 @@ public class Autopilot : MonoBehaviour, IDriver
         {
             throttle = throttle >= maxThrottle ? maxThrottle : throttle + 0.1f;
         } 
-        else {
+        else 
+        {
             throttle = 0;
         }
 
