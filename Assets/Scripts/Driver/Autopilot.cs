@@ -112,7 +112,6 @@ public class Autopilot : MonoBehaviour, IDriver
         }
 
         carController.SetThrottle(throttle);
-        Debug.Log(currentMaxSpeed);
     }
 
     private void HandleSteering()
