@@ -20,14 +20,15 @@ public class Game : MonoBehaviour
         track = GameObject.Find("GenRoad").GetComponent<Track>();
 
         Quaternion rot = pathGenerator.path.GetRotationAtDistance(0);
-        Quaternion targetRot = rot * Quaternion.identity;
-        car = Instantiate(carPrefab, new Vector3(0, 0, 0), targetRot);
+        Quaternion targetRot = Quaternion.identity * new Quaternion(0, rot.y, 0, rot.w);
+        Vector3 position = pathGenerator.path.GetPointAtDistance(0);
+        car = Instantiate(carPrefab, position, targetRot);
         cameraFollow = GameObject.Find("Camera").GetComponent<CameraFollow>();
         cameraFollow.target = car.GetComponent<Transform>();
 
         carController = car.GetComponent<CarController>();
         // set driver always to Auto; change later
-        driver = GameObject.Find("Autopilot").GetComponent<Autopilot>();
+        driver = GameObject.Find("Simulated").GetComponent<SimulatedDriver>();
         driver.StartStopTimer(true);
     }
 
