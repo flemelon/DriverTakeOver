@@ -4,7 +4,10 @@ using UnityEngine;
 
 public interface IDriver
 {
-    public void SetPathGenerator (PathGenerator pathGenerator);
-    public void SetTrack (Track track);
-    public void SetCarController (CarController carController);
+    float time { get; set; }
+    float throttle { get; set; }
+    float speed { get; set; }
+    bool timeStart { get; set; }
+    
+    void StartStopTimer(bool startStop);
 }

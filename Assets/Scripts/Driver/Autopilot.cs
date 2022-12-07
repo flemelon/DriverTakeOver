@@ -6,10 +6,10 @@ using PathCreation;
 
 public class Autopilot : MonoBehaviour, IDriver
 {
-
     public PathGenerator pathGenerator;
     public Track track;
     public PathCreator pathCreator;
+    public Game game;
     private BezierPath bezierPath;
     private VertexPath path;
 
@@ -17,19 +17,20 @@ public class Autopilot : MonoBehaviour, IDriver
     private GameObject speedCheckPoint;
     private GameObject navCheckPoint;
 
-    private CarController carController;
+    public CarController carController;
 
     public int currentNavCheckPointIndex = 0;
     public int currentSpeedCheckPointIndex = 10;
     public float maxSpeedCoefficiant = 0.6f;
     public float maxSteeringAngle = 30f;
     public float steeringAngle;
-
-    public float speed;
-    public float throttle = 1.0f;
     public float minThrottle = -1.0f;
     public float maxThrottle = 1.0f;
 
+    public float speed { get; set; }
+    public float throttle { get; set; }
+    public float time { get; set; }
+    public bool timeStart { get; set; }
 
     void Start()
     {
@@ -38,17 +39,29 @@ public class Autopilot : MonoBehaviour, IDriver
 
     private void FixedUpdate()
     {
+        if(timeStart)
+        {
+            time += Time.fixedDeltaTime;  
+        }
+
         HandleNavigation();
         HandleSpeed();
         HandleSteering();
     }
 
-    void InitObjects ()
+    public void InitObjects ()
     {
-
+        time = 0;
+        game = GameObject.Find("Parent").GetComponent<Game>();
         pathGenerator = GameObject.Find("GenRoad").GetComponent<PathGenerator>();
         track = GameObject.Find("GenRoad").GetComponent<Track>();
-        carController = GameObject.Find("Car").GetComponent<CarController>();
+        carController = game.car.GetComponent<CarController>();
+    }
+
+    public void StartStopTimer(bool startStop)
+    {
+        time = 0;
+        timeStart = startStop;
     }
 
     public void SetPathGenerator(PathGenerator pathGenerator)
@@ -66,7 +79,7 @@ public class Autopilot : MonoBehaviour, IDriver
         this.carController = carController;
     }
 
-    private void HandleNavigation()
+    public void HandleNavigation()
     {
         if(currentNavCheckPointIndex < track.waypoints.Length && 
             Mathf.Abs(Vector3.Distance(track.waypoints[currentNavCheckPointIndex], carController.GetPosition())) <= 3f){
@@ -131,7 +144,6 @@ public class Autopilot : MonoBehaviour, IDriver
         float y = carController.GetTransform().eulerAngles.y;
         var delta = Mathf.DeltaAngle(y, targetRotation.eulerAngles.y);
         float normalized = Mathf.Abs(Mathf.Cos(delta%90));
-        //Debug.Log("NORMALIZED: " + normalized);
         float speed =  Mathf.Lerp(track.minSpeed, track.maxSpeed, normalized);
         return speed;
     }
