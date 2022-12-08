@@ -5,9 +5,11 @@ using UnityEngine;
 public class SimulatedDriver : Autopilot
 {
     float endTime = 0;
+    float error = 0.4f;
 
     void Start()
     {
+        endTime = Time.time + 10;
         InitObjects();
     }
 
@@ -52,6 +54,8 @@ public class SimulatedDriver : Autopilot
             throttle = -1;
         }
 
+        float actualThrottle = (throttle == 0) ? 0 : throttle - error * (Mathf.Sin((int)time) - 1);
+
         carController.SetThrottle(throttle);
     }
 
@@ -64,7 +68,7 @@ public class SimulatedDriver : Autopilot
         float delta = Mathf.Clamp(DeltaAngle, -1, 1);
         steeringAngle = maxSteeringAngle * delta;
 
-        float error = 0.4f;
+
 
         if(steeringAngle < 5)
         {
@@ -72,13 +76,13 @@ public class SimulatedDriver : Autopilot
         } 
         else
         {
-            if(steeringAngle < 15)
+            if(steeringAngle < 10)
             {
                 error = 0.8f;
             }
         }
 
-        float actualSteering = steeringAngle * (1 - error * Mathf.Abs(Mathf.Sin(time)));
+        float actualSteering = steeringAngle * (1 - error * Mathf.Abs(Mathf.Sin((int)time)));
 
         carController.SetSteeringAngle(steeringAngle);
     }

@@ -20,7 +20,7 @@ public class DataDisplay : MonoBehaviour
         game = GameObject.Find("Parent").GetComponent<Game>();
         car = game.car;
         carController = game.car.GetComponent<CarController>();
-        driver = GameObject.Find("Autopilot").GetComponent<Autopilot>();
+        driver = game.driver;
         track = GameObject.Find("GenRoad").GetComponent<Track>();
     }
 

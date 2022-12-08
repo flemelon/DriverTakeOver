@@ -6,7 +6,7 @@ public class Game : MonoBehaviour
 {
     PathGenerator pathGenerator;
     Track track;
-    IDriver driver;
+    public IDriver driver;
     CarController carController;
     CameraFollow cameraFollow;
     public GameObject carPrefab;
