@@ -17,7 +17,7 @@ public class DataDisplay : MonoBehaviour
 
     void Awake()
     {
-        game = GameObject.Find("Parent").GetComponent<Game>();
+        game = GameObject.Find("TorAgent").GetComponent<Game>();
         car = game.car;
         carController = game.car.GetComponent<CarController>();
         driver = game.driver;

@@ -52,7 +52,7 @@ public class Autopilot : MonoBehaviour, IDriver
     public void InitObjects ()
     {
         time = 0;
-        game = GameObject.Find("Parent").GetComponent<Game>();
+        game = GameObject.Find("TorAgent").GetComponent<Game>();
         pathGenerator = GameObject.Find("GenRoad").GetComponent<PathGenerator>();
         track = GameObject.Find("GenRoad").GetComponent<Track>();
         carController = game.car.GetComponent<CarController>();

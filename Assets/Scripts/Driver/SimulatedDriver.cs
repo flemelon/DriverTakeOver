@@ -80,6 +80,10 @@ public class SimulatedDriver : Autopilot
             {
                 error = 0.8f;
             }
+            else
+            {
+                error = 0.4f;
+            }
         }
 
         float actualSteering = steeringAngle * (1 - error * Mathf.Abs(Mathf.Sin((int)time)));
