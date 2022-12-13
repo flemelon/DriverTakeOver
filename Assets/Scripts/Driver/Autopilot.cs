@@ -30,16 +30,16 @@ public class Autopilot : MonoBehaviour, IDriver
     public float speed { get; set; }
     public float throttle { get; set; }
     public float time { get; set; }
-    public bool timeStart { get; set; }
+    public bool timeStarted { get; set; }
 
-    void Start()
+    public virtual void Start()
     {
         InitObjects();
     }
 
-    private void FixedUpdate()
+    public virtual void FixedUpdate()
     {
-        if(timeStart)
+        if(timeStarted)
         {
             time += Time.fixedDeltaTime;  
         }
@@ -58,10 +58,10 @@ public class Autopilot : MonoBehaviour, IDriver
         carController = game.car.GetComponent<CarController>();
     }
 
-    public void StartStopTimer(bool startStop)
+    public virtual void StartStopTimer(bool startTime)
     {
         time = 0;
-        timeStart = startStop;
+        timeStarted = startTime;
     }
 
     public void SetPathGenerator(PathGenerator pathGenerator)
@@ -93,7 +93,7 @@ public class Autopilot : MonoBehaviour, IDriver
         }
     }
 
-    private void HandleSpeed()
+    public virtual void HandleSpeed()
     {
         speed = carController.GetSpeed();
         float currentMaxSpeed = track.speedLimit[currentNavCheckPointIndex];
@@ -125,7 +125,7 @@ public class Autopilot : MonoBehaviour, IDriver
         carController.SetThrottle(throttle);
     }
 
-    private void HandleSteering()
+    public virtual void HandleSteering()
     {
         var relativePos = track.waypoints[currentNavCheckPointIndex] - carController.GetPosition();
         var targetRotation = Quaternion.LookRotation(relativePos);
@@ -146,5 +146,15 @@ public class Autopilot : MonoBehaviour, IDriver
         float normalized = Mathf.Abs(Mathf.Cos(delta%90));
         float speed =  Mathf.Lerp(track.minSpeed, track.maxSpeed, normalized);
         return speed;
+    }
+
+    public float GetCurrentTime()
+    {
+        return track.path.GetClosestTimeOnPath(carController.GetPosition());
+    }
+
+    public virtual DriverType GetDriverType()
+    {
+        return DriverType.Autopilot;
     }
 }

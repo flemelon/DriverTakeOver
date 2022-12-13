@@ -7,15 +7,21 @@ public class SimulatedDriver : Autopilot
     float endTime = 0;
     float error = 0.4f;
 
-    void Start()
+    public override void Start()
     {
         endTime = Time.time + 10;
         InitObjects();
     }
 
-    private void FixedUpdate()
+    public override void StartStopTimer(bool startTime)
     {
-        if(timeStart && time <= endTime)
+        this.time = 0;
+        timeStarted = startTime;
+    }
+
+    public override void FixedUpdate()
+    {
+        if(timeStarted && time <= endTime)
         {
             time += Time.fixedDeltaTime;  
         }
@@ -25,7 +31,7 @@ public class SimulatedDriver : Autopilot
         HandleSteering();
     }
 
-    private void HandleSpeed()
+    public override void HandleSpeed()
     {
         speed = carController.GetSpeed();
         float currentMaxSpeed = track.speedLimit[currentNavCheckPointIndex];
@@ -59,7 +65,7 @@ public class SimulatedDriver : Autopilot
         carController.SetThrottle(throttle);
     }
 
-    private void HandleSteering()
+    public override void HandleSteering()
     {
         var relativePos = track.waypoints[currentNavCheckPointIndex] - carController.GetPosition();
         var targetRotation = Quaternion.LookRotation(relativePos);
@@ -89,5 +95,10 @@ public class SimulatedDriver : Autopilot
         float actualSteering = steeringAngle * (1 - error * Mathf.Abs(Mathf.Sin((int)time)));
 
         carController.SetSteeringAngle(steeringAngle);
+    }
+
+    public override DriverType GetDriverType()
+    {
+        return DriverType.Simulated_Driver;
     }
 }

@@ -7,7 +7,10 @@ public interface IDriver
     float time { get; set; }
     float throttle { get; set; }
     float speed { get; set; }
-    bool timeStart { get; set; }
+    bool timeStarted { get; set; }
     
     void StartStopTimer(bool startStop);
+    float GetCurrentTime();
+    DriverType GetDriverType();
+    void SetCarController(CarController carController);
 }

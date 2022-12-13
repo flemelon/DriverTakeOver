@@ -29,8 +29,8 @@ public class PathGenerator : MonoBehaviour
 
     [SerializeField] private GameObject exclamationMark;
     GameObject exclamationMarkHolder;
-    float exclamationMarkTime;
-    Vector3 exclamationMarkPosition;
+    public float exclamationMarkTime;
+    public Vector3 exclamationMarkPosition;
 
     // Awake is called before Start
     void Awake()
@@ -56,7 +56,7 @@ public class PathGenerator : MonoBehaviour
 
     void GenerateRoad ()
     {
-        while(pathCreator.path.length < 2000)
+        while(pathCreator.path.length < 1000)
         {
             for (int i = 0; i < 3; i++)
             {

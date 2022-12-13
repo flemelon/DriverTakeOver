@@ -4,7 +4,7 @@ using UnityEngine;
 
 public enum DriverType
 {
-    Auto,
-    Simulated,
-    Human
+    Autopilot,
+    Simulated_Driver,
+    Human_Driver
 } 

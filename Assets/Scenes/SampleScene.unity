@@ -190,6 +190,8 @@ MonoBehaviour:
   textureTiling: 1
   meshHolder: {fileID: 236509125}
   exclamationMark: {fileID: 6445215557665579778, guid: 0b6974eba934441c18f15ca095879ea1, type: 3}
+  exclamationMarkTime: 0
+  exclamationMarkPosition: {x: 0, y: 0, z: 0}
 --- !u!114 &236509128
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -670,8 +672,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e66a0ff381ae4e07a68393977bff9a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pathGenerator: {fileID: 0}
+  track: {fileID: 0}
+  carController: {fileID: 0}
   carPrefab: {fileID: 1144969173579768910, guid: fdb992dad0c4e4ca8b0a0d76d3115c16, type: 3}
   car: {fileID: 0}
+  torTime: 0
 --- !u!114 &1175548989
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -688,6 +694,7 @@ MonoBehaviour:
     maxStep: 0
   hasUpgradedFromAgentParameters: 1
   MaxStep: 0
+  game: {fileID: 0}
 --- !u!4 &1175548990
 Transform:
   m_ObjectHideFlags: 0
@@ -729,7 +736,7 @@ MonoBehaviour:
     VectorActionSpaceType: 0
   m_Model: {fileID: 0}
   m_InferenceDevice: 0
-  m_BehaviorType: 0
+  m_BehaviorType: 1
   m_BehaviorName: TOR Behavior
   TeamId: 0
   m_UseChildSensors: 1

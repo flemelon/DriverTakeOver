@@ -7,7 +7,6 @@ public class DataDisplay : MonoBehaviour
     [SerializeField] TextMeshProUGUI DataText;
     private GameObject car;
     private CarController carController;
-    private IDriver driver;
     private Track track;
     private Game game;
 
@@ -20,7 +19,6 @@ public class DataDisplay : MonoBehaviour
         game = GameObject.Find("TorAgent").GetComponent<Game>();
         car = game.car;
         carController = game.car.GetComponent<CarController>();
-        driver = game.driver;
         track = GameObject.Find("GenRoad").GetComponent<Track>();
     }
 
@@ -29,15 +27,16 @@ public class DataDisplay : MonoBehaviour
 
         float msec = deltaTime * 1000.0f;
         float fps = 1.0f / deltaTime;
+        displayText += game.currentDriver.GetDriverType().ToString() + "\n";
         displayText += string.Format("{0:0.0} ms ({1:0.} fps)", msec, fps) + "\n";
-        displayText += "driving time: " + (int) driver.time + "s\n";
+        displayText += "driving time: " + (int) game.currentDriver.time + "s\n";
         displayText += "steering angle: " + carController.steeringAngle + "\n";
-        displayText += "throttle: " + driver.throttle + "\n";
+        displayText += "throttle: " + game.currentDriver.throttle + "\n";
         displayText += "car position: " + car.transform.position + "\n";
         displayText += "sdlp sum: " + track.sdlpSum + "\n";
         displayText += "number of measurements: " + track.n + "\n";
         displayText += "current sdlp: " + track.GetSdlp() + "\n";
-        displayText += "speed: " + (int)(driver.speed*3.6) + "km/h";
+        displayText += "speed: " + (int)(game.currentDriver.speed*3.6) + "km/h";
         
 
         DataText.text = displayText;
