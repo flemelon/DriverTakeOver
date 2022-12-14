@@ -31,9 +31,10 @@ public class Game : MonoBehaviour
 
         carController = car.GetComponent<CarController>();
 
-        //currentDriver = GameObject.Find("Autopilot").GetComponent<Autopilot>();
+        currentDriver = GameObject.Find("Autopilot").GetComponent<Autopilot>();
         simulatedDriver = GameObject.Find("Simulated").GetComponent<SimulatedDriver>();
-        currentDriver = simulatedDriver;
+        simulatedDriver.Disable();
+        //currentDriver = simulatedDriver;
         currentDriver.StartStopTimer(true);
 
         torTime = pathGenerator.exclamationMarkTime - 0.05f;
@@ -48,7 +49,8 @@ public class Game : MonoBehaviour
                 torTime = 0.95f;
             }
         }
-
+        Debug.Log("TorTime: " + torTime);
+        Debug.Log("Type: " + currentDriver.GetDriverType().ToString());
     }
 
     // Update is called once per frame
@@ -56,7 +58,10 @@ public class Game : MonoBehaviour
     {
         if(currentDriver.GetCurrentTime() >= torTime && currentDriver.GetDriverType() == DriverType.Autopilot)
         { 
-            currentDriver.SetCarController(null);
+            currentDriver.Disable();
+            simulatedDriver.Enable();
+            simulatedDriver.currentNavCheckPointIndex = currentDriver.currentNavCheckPointIndex;
+            simulatedDriver.currentSpeedCheckPointIndex = currentDriver.currentSpeedCheckPointIndex;
             currentDriver = simulatedDriver;
             currentDriver.StartStopTimer(true);
         }

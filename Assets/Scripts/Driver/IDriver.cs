@@ -8,9 +8,13 @@ public interface IDriver
     float throttle { get; set; }
     float speed { get; set; }
     bool timeStarted { get; set; }
+    int currentNavCheckPointIndex { get; set; }
+    int currentSpeedCheckPointIndex { get; set; }
     
     void StartStopTimer(bool startStop);
     float GetCurrentTime();
     DriverType GetDriverType();
     void SetCarController(CarController carController);
+    void Enable();
+    void Disable();
 }

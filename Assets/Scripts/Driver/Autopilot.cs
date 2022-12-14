@@ -19,8 +19,8 @@ public class Autopilot : MonoBehaviour, IDriver
 
     public CarController carController;
 
-    public int currentNavCheckPointIndex = 0;
-    public int currentSpeedCheckPointIndex = 10;
+    public int currentNavCheckPointIndex { get; set; } = 0;
+    public int currentSpeedCheckPointIndex { get; set; } = 10;
     public float maxSpeedCoefficiant = 0.6f;
     public float maxSteeringAngle = 30f;
     public float steeringAngle;
@@ -58,6 +58,14 @@ public class Autopilot : MonoBehaviour, IDriver
         carController = game.car.GetComponent<CarController>();
     }
 
+    public void Enable(){
+        this.enabled = true;
+    }
+
+    public void Disable(){
+        this.enabled = false;
+    }
+
     public virtual void StartStopTimer(bool startTime)
     {
         time = 0;
@@ -81,7 +89,10 @@ public class Autopilot : MonoBehaviour, IDriver
 
     public void HandleNavigation()
     {
-        if(currentNavCheckPointIndex < track.waypoints.Length && 
+        
+        if(
+            currentNavCheckPointIndex < 
+        track.waypoints.Length && 
             Mathf.Abs(Vector3.Distance(track.waypoints[currentNavCheckPointIndex], carController.GetPosition())) <= 3f){
             currentNavCheckPointIndex = 
                 currentNavCheckPointIndex < track.waypoints.Length - 1? currentNavCheckPointIndex + 1 : track.waypoints.Length - 1;

@@ -27,6 +27,8 @@ public class PathGenerator : MonoBehaviour
     MeshRenderer meshRenderer;
     Mesh mesh;
 
+    public int maxPathLength = 1000;
+
     [SerializeField] private GameObject exclamationMark;
     GameObject exclamationMarkHolder;
     public float exclamationMarkTime;
@@ -56,7 +58,7 @@ public class PathGenerator : MonoBehaviour
 
     void GenerateRoad ()
     {
-        while(pathCreator.path.length < 1000)
+        while(pathCreator.path.length < maxPathLength)
         {
             for (int i = 0; i < 3; i++)
             {
