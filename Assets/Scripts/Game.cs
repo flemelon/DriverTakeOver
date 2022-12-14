@@ -63,6 +63,8 @@ public class Game : MonoBehaviour
             simulatedDriver.currentNavCheckPointIndex = currentDriver.currentNavCheckPointIndex;
             simulatedDriver.currentSpeedCheckPointIndex = currentDriver.currentSpeedCheckPointIndex;
             currentDriver = simulatedDriver;
+            track.sdlpSum = 0;
+            track.n = 0;
             currentDriver.StartStopTimer(true);
         }
     }
