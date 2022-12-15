@@ -4,26 +4,37 @@ using UnityEngine;
 
 public class SimulatedDriver : Autopilot
 {
-    float endTime = 0;
+    public float timeRemaining = 10;
     float error = 0.4f;
 
     public override void Start()
     {
-        endTime = Time.time + 10;
         InitObjects();
     }
 
     public override void StartStopTimer(bool startTime)
     {
-        this.time = 0;
-        timeStarted = startTime;
+        this.time = Time.time;
+        isTimerRunning = startTime;
+
+        Debug.Log(timeRemaining + ", " + time + ", " + isTimerRunning);
     }
 
     public override void FixedUpdate()
     {
-        if(timeStarted && time <= endTime)
+        if (isTimerRunning)
         {
-            time += Time.fixedDeltaTime;  
+            if (timeRemaining > 0)
+            {
+                timeRemaining -= Time.deltaTime;
+                time += Time.fixedDeltaTime; 
+            }
+            else
+            {
+                Debug.Log("Time has run out!");
+                timeRemaining = 0;
+                isTimerRunning = false;
+            }
         }
 
         HandleNavigation();
@@ -55,12 +66,12 @@ public class SimulatedDriver : Autopilot
             throttle = 0;
         }
 
-        if((currentNavCheckPointIndex >= track.waypoints.Length - 1) || time >= (endTime + 10))
+        float actualThrottle = (throttle == 0) ? 0 : throttle - error * (Mathf.Sin((int)time) - 1);
+
+        if( timeRemaining <= 0 || (currentNavCheckPointIndex >= track.waypoints.Length - 1) )
         {
             throttle = -1;
         }
-
-        float actualThrottle = (throttle == 0) ? 0 : throttle - error * (Mathf.Sin((int)time) - 1);
 
         carController.SetThrottle(throttle);
     }

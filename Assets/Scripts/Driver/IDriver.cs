@@ -7,7 +7,7 @@ public interface IDriver
     float time { get; set; }
     float throttle { get; set; }
     float speed { get; set; }
-    bool timeStarted { get; set; }
+    bool isTimerRunning { get; set; }
     int currentNavCheckPointIndex { get; set; }
     int currentSpeedCheckPointIndex { get; set; }
     

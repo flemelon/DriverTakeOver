@@ -30,7 +30,7 @@ public class Autopilot : MonoBehaviour, IDriver
     public float speed { get; set; }
     public float throttle { get; set; }
     public float time { get; set; }
-    public bool timeStarted { get; set; }
+    public bool isTimerRunning { get; set; }
 
     public virtual void Start()
     {
@@ -39,7 +39,7 @@ public class Autopilot : MonoBehaviour, IDriver
 
     public virtual void FixedUpdate()
     {
-        if(timeStarted)
+        if(isTimerRunning)
         {
             time += Time.fixedDeltaTime;  
         }
@@ -69,7 +69,7 @@ public class Autopilot : MonoBehaviour, IDriver
     public virtual void StartStopTimer(bool startTime)
     {
         time = 0;
-        timeStarted = startTime;
+        isTimerRunning = startTime;
     }
 
     public void SetPathGenerator(PathGenerator pathGenerator)

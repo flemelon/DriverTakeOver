@@ -189,6 +189,7 @@ MonoBehaviour:
   undersideMaterial: {fileID: 2100000, guid: c1d8d882244c5344fa86a8fd23246f81, type: 2}
   textureTiling: 1
   meshHolder: {fileID: 236509125}
+  maxPathLength: 100
   exclamationMark: {fileID: 6445215557665579778, guid: 0b6974eba934441c18f15ca095879ea1, type: 3}
   exclamationMarkTime: 0
   exclamationMarkPosition: {x: 0, y: 0, z: 0}
@@ -276,8 +277,6 @@ MonoBehaviour:
   game: {fileID: 0}
   speedArrow: {fileID: 0}
   carController: {fileID: 0}
-  currentNavCheckPointIndex: 0
-  currentSpeedCheckPointIndex: 10
   maxSpeedCoefficiant: 0.6
   maxSteeringAngle: 30
   steeringAngle: 0
@@ -1037,8 +1036,6 @@ MonoBehaviour:
   game: {fileID: 0}
   speedArrow: {fileID: 911498767203574450, guid: df15d760d59ac45a993cf45c58734ab5, type: 3}
   carController: {fileID: 0}
-  currentNavCheckPointIndex: 0
-  currentSpeedCheckPointIndex: 10
   maxSpeedCoefficiant: 0.6
   maxSteeringAngle: 30
   steeringAngle: 0
