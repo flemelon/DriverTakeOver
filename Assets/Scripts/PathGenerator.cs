@@ -66,8 +66,8 @@ public class PathGenerator : MonoBehaviour
                 Vector3 newPoint;
                 do
                 {
-                    float randomPosX = Random.Range(1, 5)*3;
-                    float randomPosZ = Random.Range(1, 5)*3;
+                    float randomPosX = Random.Range(1, 5)*7;
+                    float randomPosZ = Random.Range(1, 5)*7;
 
                     newPoint = new Vector3(lastPoint.x + randomPosX, 0, lastPoint.z + randomPosZ);
 
